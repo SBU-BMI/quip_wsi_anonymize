@@ -37,7 +37,7 @@ def anonymize_image(ifname,file_uuid,file_ext,outdir):
     process = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     process.wait()
 
-    return out_fdir+"/"+file_uuid+file_ext,ierr
+    return file_uuid+"/"+file_uuid+file_ext,ierr
 
 def check_input_errors(pf,all_log):
     ret_val = 0;
@@ -159,6 +159,8 @@ def process_manifest_file(args):
     out_metadata_fd.close()
     out_error_fd.close()
 
+    return 0
+
 def process_single_slide(args):
     inp_folder = args.inpdir
     out_folder = args.outdir
@@ -203,11 +205,17 @@ def process_single_slide(args):
             ierr["row_idx"] = file_idx
             ierr["filename"] = file_row 
             ierr["file_uuid"] = file_uuid
-            all_log["error"].append(ierr)
+            all_log["error"].append(ierr) 
+
+        out_metadata_fd  = open(out_folder + "/" + file_uuid + "_" + out_manifest_fname,"w")
+        one_row.to_csv(out_metadata_fd,mode="w",index=False) 
+        out_metadata_fd.close()
 
     return_msg["status"] = json.dumps(all_log)
     return_msg["output"] = json.dumps(one_row.to_dict(orient='records'))
     print(return_msg)
+
+    return 0
 
 def main(args):
     if args.slide.strip()=="":
