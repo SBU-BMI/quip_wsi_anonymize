@@ -9,9 +9,9 @@ WORKDIR /root
 
 COPY . /root/.
 RUN git clone https://github.com/bgilbert/anonymize-slide.git  && \
-	chmod 0755 run_anonymize
+	chmod 0755 slide_anonymize
 
 ENV PATH=.:$PATH:/root/
 
-CMD ["run_anonymize"]
+CMD ["slide_anonymize"]
 
